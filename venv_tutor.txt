@@ -1,0 +1,11 @@
+python -m venv venv
+source venv/bin/activate       # Linux/macOS
+venv\Scripts\activate          # Windows
+pip install flask
+
+# For Insert DB
+import sqlite3, hashlib
+
+conn = sqlite3.connect('db.sqlite3')
+conn.execute("INSERT INTO kriteria (nama_kriteria, sifat) VALUES ('Resiko Alergi', 'cost');")
+conn.commit()

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .login-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 28px 28px 22px 28px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+    animation: fadeIn 1s ease-in-out;
+  }
+  .login-container h2 {
+    margin-bottom: 22px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+  .login-container label {
+    display: block;
+    margin-bottom: 7px;
+    margin-top: 10px;
+    font-weight: 500;
+    color: #343a40;
+  }
+  .login-container input[type="text"],
+  .login-container input[type="password"] {
+    width: 100%;
+    padding: 11px 13px;
+    margin-bottom: 18px;
+    border: 1.5px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background: #f8fafc;
+    box-sizing: border-box;
+  }
+  .login-container input[type="text"]:focus,
+  .login-container input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+    background: #f4faff;
+  }
+  .login-container input[type="submit"] {
+    width: 100%;
+    font-size: 1.08rem;
+    font-weight: bold;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 0;
+    border-radius: 6px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.07);
+  }
+  .login-container input[type="submit"]:hover {
+    background: #0056b3;
+  }
+</style>
+
+<div class="login-container animate__animated animate__zoomIn">
+  <h2 class="animate__animated animate__fadeInDown">Login Admin</h2>
+  <form method="post">
+    <label>Username:</label>
+    <input type="text" name="username" required>
+    <label>Password:</label>
+    <input type="password" name="password" required>
+    <input type="submit" value="Login">
+  </form>
+</div>
+{% endblock %}

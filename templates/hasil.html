@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="animate__animated animate__fadeInUp">Hasil Ranking Ras Kucing</h2>
+<table class="animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Ranking</th>
+      <th>Nama Ras</th>
+      <th>Deskripsi</th>
+      <th>Foto</th>
+      <th>Skor</th>
+      <th>Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in hasil %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ r.nama }}</td>
+      <td>{{ r.deskripsi }}</td>
+      <td class="foto-kucing-td">
+        {% if r.foto_url %}
+          <img src="{{ r.foto_url }}" alt="Foto {{ r.nama }}" class="foto-kucing-img">
+        {% else %}
+          -
+        {% endif %}
+      </td>
+      <td>{{ '%.3f' | format(r.skor) }}</td>
+      <td>
+        <button type="button" class="btn-detail" onclick="showDetail('{{ r.nama|escapejs }}', `{{ r.deskripsi|escapejs }}`)">Get Details</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+<a href="{{ url_for('index') }}" class="btn-kembali">Kembali</a>
+<style>
+.foto-kucing-td {
+  text-align: center;
+  vertical-align: middle;
+}
+.foto-kucing-img {
+  max-width: 120px;
+  max-height: 120px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.btn-kembali {
+  display: inline-block;
+  background: #007bff;
+  color: #fff !important;
+  padding: 10px 28px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,123,255,0.07);
+}
+.btn-kembali:hover {
+  background: #0056b3;
+  text-decoration: none;
+}
+.btn-detail {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-detail:hover {
+  background-color: #218838;
+}
+</style>
+<script>
+  function showDetail(nama, deskripsi) {
+    alert("Nama Ras: " + nama + "\\nDeskripsi: " + deskripsi);
+  }
+</script>
+{% endblock %}
