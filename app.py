@@ -1,17 +1,3 @@
-# Struktur folder proyek:
-# spk_kucing_saw/
-# ├── app.py
-# ├── templates/
-# │   ├── index.html.j2
-# │   ├── hasil.html.j2
-# │   ├── admin.html.j2
-# │   ├── tambah_kucing.html.j2
-# │   ├── edit_kucing.html.j2
-# │   ├── login.html.j2
-# │   ├── pengguna.html.j2
-# │   ├── ubah_password.html.j2
-# └── static/
-
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
 import pytz
