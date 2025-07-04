@@ -13,4 +13,4 @@ COPY . .
 # Instal pip package
 RUN pip3 install --no-cache-dir -r requirements.txt
 # Set CMD Bot
-CMD ["python3", "runserver.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
