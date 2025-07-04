@@ -1,0 +1,151 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<style>
+  /* Neomorphic Form Container */
+  .form-container {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #e0e0e0;
+    border-radius: 16px;
+    box-shadow:  8px 8px 16px #bebebe,
+                -8px -8px 16px #ffffff;
+    box-sizing: border-box;
+  }
+  /* Ensure tables and inputs fit container */
+  .form-container *, .input-table, .input-table th, .input-table td {
+    box-sizing: border-box;
+  }
+  .form-container h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+  }
+  /* Input Table as Card */
+  .input-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    margin-bottom: 24px;
+  }
+  .input-table th {
+    width: 30%;
+    padding: 12px;
+    background: #e0e0e0;
+    box-shadow: inset 4px 4px 8px #bebebe,
+                inset -4px -4px 8px #ffffff;
+    text-align: left;
+    font-weight: bold;
+  }
+  .input-table td {
+    padding: 12px;
+  }
+  .input-table input[type="text"],
+  .input-table input[type="url"],
+  .input-table textarea,
+  .input-table input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #e0e0e0;
+    box-shadow: inset 4px 4px 8px #bebebe,
+                inset -4px -4px 8px #ffffff;
+    font-size: 1rem;
+  }
+  .input-table textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .input-table input:focus,
+  .input-table textarea:focus {
+    outline: none;
+    box-shadow: inset 2px 2px 4px #bebebe,
+                inset -2px -2px 4px #ffffff;
+  }
+  /* Section Title */
+  .form-container h3 {
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+    text-align: left;
+  }
+  /* Buttons */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .btn-neomorph {
+    padding: 12px 24px;
+    border-radius: 50px;
+    background: #e0e0e0;
+    box-shadow:  4px 4px 8px #bebebe,
+                -4px -4px 8px #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+    color: #333;
+    display: inline-block;
+  }
+  .btn-neomorph:hover {
+    box-shadow: inset 4px 4px 8px #bebebe,
+                inset -4px -4px 8px #ffffff;
+  }
+  .btn-submit { width: 140px; text-align: center; }
+  .btn-secondary { width: 180px; }
+  /* Footer Styling */
+  footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+  }
+</style>
+
+<div class="form-container animate__animated animate__fadeInUp">
+  <h2 class="animate__animated animate__fadeInUp">Tambah Ras Kucing Baru</h2>
+  <form method="post">
+    <table class="input-table">
+      <tr>
+        <th>Nama Ras</th>
+        <td><input type="text" name="nama_ras" required placeholder="Contoh: Persian"></td>
+      </tr>
+      <tr>
+        <th>Deskripsi</th>
+        <td><textarea name="deskripsi" required placeholder="Deskripsi singkat ras kucing"></textarea></td>
+      </tr>
+      <tr>
+        <th>URL Foto</th>
+        <td><input type="url" name="foto_url" required placeholder="https://..."></td>
+      </tr>
+    </table>
+
+    <h3>Nilai Kriteria</h3>
+    <table class="input-table">
+      <thead>
+        <tr>
+          <th>Nama Kriteria</th>
+          <th>Sifat</th>
+          <th>Nilai</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for k in kriteria %}
+        <tr>
+          <td>{{ k.nama_kriteria }}</td>
+          <td>{{ k.sifat }}</td>
+          <td><input type="number" name="nilai_{{ k.id }}" step="0.01" min="0" required placeholder="Masukkan nilai"></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-neomorph btn-submit">Simpan</button>
+      <a href="{{ url_for('admin') }}" class="btn-neomorph btn-secondary">Kembali ke Dashboard</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

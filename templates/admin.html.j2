@@ -1,0 +1,143 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<style>
+  /* Neomorphic Buttons */
+  .btn-neomorph {
+    padding: 10px 18px;
+    border-radius: 50px;
+    background: var(--neo-bg);
+    box-shadow: 4px 4px 8px var(--neo-shadow-dark), -4px -4px 8px var(--neo-shadow-light);
+    color: var(--neo-text);
+    text-decoration: none;
+    font-weight: bold;
+    transition: box-shadow 0.3s, background 0.3s, color 0.3s;
+    display: inline-block;
+  }
+  .btn-neomorph:hover {
+    box-shadow: inset 4px 4px 8px var(--neo-shadow-dark), inset -4px -4px 8px var(--neo-shadow-light);
+    background: var(--neo-accent);
+    color: #fff;
+  }
+  .btn-small { padding: 6px 12px; font-size: 0.9rem; border-radius: 12px; }
+  .btn-danger {
+    background: #e74c3c !important;
+    color: #fff !important;
+    border: none !important;
+    outline: none !important;
+  }
+  .btn-danger:hover {
+    background: #c82333 !important;
+    color: #fff !important;
+    border: none !important;
+    outline: none !important;
+  }
+  .btn-danger:focus,
+  .btn-danger:active,
+  .btn-neomorph:focus,
+  .btn-neomorph:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Header Actions */
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    margin: 24px 0 16px 0;
+    justify-content: flex-end;
+  }
+
+  /* Greeting */
+  .halo-user { margin-top: 80px; text-align: center; font-size: 1.2rem; color: var(--neo-text); }
+
+  /* List Container */
+  .list-container { max-width: 1000px; margin: 20px auto 40px; padding: 20px; background: var(--neo-bg); border-radius: 18px; box-shadow: 8px 8px 16px var(--neo-shadow-dark), -8px -8px 16px var(--neo-shadow-light); }
+
+  /* Table Neomorph */
+  table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+  thead th { background: var(--neo-bg); box-shadow: inset 4px 4px 8px var(--neo-shadow-dark), inset -4px -4px 8px var(--neo-shadow-light); padding: 12px; text-align: left; color: var(--neo-accent); }
+  tbody tr { background: var(--neo-bg); box-shadow: 4px 4px 8px var(--neo-shadow-dark), -4px -4px 8px var(--neo-shadow-light); border-radius: 12px; transition: transform 0.2s; }
+  tbody tr:hover { transform: translateY(-2px); }
+  td { padding: 12px; vertical-align: middle; color: var(--neo-text); }
+  .foto-kucing-img { max-width: 120px; max-height: 120px; border-radius: 12px; box-shadow: 4px 4px 8px var(--neo-shadow-dark), -4px -4px 8px var(--neo-shadow-light); display: block; margin: 0 auto; background: var(--neo-bg); }
+
+  /* Confirmation Modal */
+  .confirm-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(30,30,30,0.4); display:none; align-items:center; justify-content:center; z-index:1000; }
+  body.dark-mode .confirm-overlay { background: rgba(10,10,20,0.7); }
+  .confirm-box { background: var(--neo-bg); padding: 20px; border-radius: 16px; box-shadow: 8px 8px 16px var(--neo-shadow-dark), -8px -8px 16px var(--neo-shadow-light); text-align: center; min-width:300px; color: var(--neo-text); }
+  .confirm-box p { margin-bottom: 20px; font-size:1rem; color: var(--neo-text); }
+  .confirm-box .btn-group { display: flex; justify-content: center; gap: 12px; }
+
+  /* Footer */
+  footer { text-align:center; font-size:0.9rem; color:var(--neo-text); background: var(--neo-bg); }
+</style>
+
+<div class="header-actions animate__animated animate__fadeInDown">
+  <a href="{{ url_for('tambah_kucing') }}" class="btn-neomorph">Tambah Ras Kucing</a>
+  <a href="{{ url_for('ubah_password') }}" class="btn-neomorph">Ubah Password</a>
+  <a href="{{ url_for('logout') }}" class="btn-neomorph btn-danger">Logout</a>
+</div>
+
+<div class="halo-user animate__animated animate__fadeInUp">{{ greeting }}, {{ session.username }}!</div>
+
+<div class="list-container animate__animated animate__fadeInUp">
+  <h2 class="animate__animated animate__fadeInUp" style="text-align:center; margin-bottom:20px;">Daftar Ras Kucing</h2>
+  <table class="animate__animated animate__fadeIn">
+    <thead>
+      <tr><th>No</th><th>Nama Ras</th><th>Deskripsi</th><th>Foto</th><th>Aksi</th></tr>
+    </thead>
+    <tbody>
+      {% for r in ras %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ r.nama_ras }}</td>
+        <td>{{ r.deskripsi }}</td>
+        <td>{% if r.foto_url %}<img src="{{ r.foto_url }}" alt="{{ r.nama_ras }}" class="foto-kucing-img animate__animated animate__fadeIn">{% else %}-{% endif %}</td>
+        <td>
+          <a href="{{ url_for('edit_kucing', id=r.id) }}" class="btn-neomorph btn-small animate__animated animate__fadeInLeft">Edit</a>
+          <button class="btn-neomorph btn-small btn-danger animate__animated animate__fadeInRight" data-id="{{ r.id }}" data-name="{{ r.nama_ras }}">Hapus</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box animate__animated" id="confirmBox">
+    <p id="confirmText"></p>
+    <div class="btn-group">
+      <button id="confirmYes" class="btn-neomorph btn-small btn-danger">Ya</button>
+      <button id="confirmNo" class="btn-neomorph btn-small">Tidak</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // URL prefix ends with '/'
+  const prefix = "{{ url_for('hapus_kucing', id=0)[:-1] }}";
+  const overlay = document.getElementById('confirmOverlay');
+  const box = document.getElementById('confirmBox');
+  let deleteUrl = '';
+  document.querySelectorAll('button[data-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.name;
+      const id = btn.dataset.id;
+      deleteUrl = prefix + id;
+      document.getElementById('confirmText').textContent = `Hapus ras '${name}'?`;
+      overlay.style.display = 'flex';
+      overlay.className = 'confirm-overlay animate__animated animate__fadeIn';
+      box.className = 'confirm-box animate__animated animate__fadeInDown';
+    });
+  });
+  document.getElementById('confirmNo').onclick = () => {
+    overlay.className = 'confirm-overlay animate__animated animate__fadeOut';
+    box.className = 'confirm-box animate__animated animate__fadeOutUp';
+    setTimeout(() => overlay.style.display = 'none', 300);
+  };
+  document.getElementById('confirmYes').onclick = () => { window.location.href = deleteUrl; };
+  overlay.addEventListener('click', e => { if(e.target === overlay) document.getElementById('confirmNo').click(); });
+</script>
+{% endblock %}

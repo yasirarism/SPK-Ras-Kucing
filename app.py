@@ -2,17 +2,19 @@
 # spk_kucing_saw/
 # ├── app.py
 # ├── templates/
-# │   ├── index.html
-# │   ├── hasil.html
-# │   ├── admin.html
-# │   ├── tambah_kucing.html
-# │   ├── edit_kucing.html
-# │   ├── login.html
-# │   ├── pengguna.html
-# │   ├── ubah_password.html
+# │   ├── index.html.j2
+# │   ├── hasil.html.j2
+# │   ├── admin.html.j2
+# │   ├── tambah_kucing.html.j2
+# │   ├── edit_kucing.html.j2
+# │   ├── login.html.j2
+# │   ├── pengguna.html.j2
+# │   ├── ubah_password.html.j2
 # └── static/
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from datetime import datetime
+import pytz
 import sqlite3
 import hashlib
 
@@ -31,7 +33,7 @@ def hash_password(password):
 def index():
     conn = get_db()
     kriteria = conn.execute('SELECT * FROM kriteria').fetchall()
-    return render_template('index.html', kriteria=kriteria)
+    return render_template('index.html.j2', kriteria=kriteria)
 
 @app.route('/hasil', methods=['POST'])
 def hasil():
@@ -83,7 +85,7 @@ def hasil():
         })
 
     hasil.sort(key=lambda x: x['skor'], reverse=True)
-    return render_template('hasil.html', hasil=hasil)
+    return render_template('hasil.html.j2', hasil=hasil)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -101,7 +103,7 @@ def login():
         else:
             flash('Username atau password salah!', 'danger')
             return redirect(url_for('login'))
-    return render_template('login.html')
+    return render_template('login.html.j2')
 
 @app.route('/logout')
 def logout():
@@ -115,7 +117,17 @@ def admin():
         return redirect(url_for('login'))
     conn = get_db()
     ras = conn.execute('SELECT * FROM ras_kucing').fetchall()
-    return render_template('admin.html', ras=ras)
+    tz = pytz.timezone('Asia/Jakarta')
+    hour = datetime.now(tz).hour
+    if hour < 12:
+        greeting = 'Selamat Pagi'
+    elif hour < 15:
+        greeting = 'Selamat Siang'
+    elif hour < 18:
+        greeting = 'Selamat Sore'
+    else:
+        greeting = 'Selamat Malam'
+    return render_template('admin.html.j2', ras=ras, greeting=greeting)
 
 @app.route('/tambah', methods=['GET', 'POST'])
 def tambah_kucing():
@@ -140,7 +152,7 @@ def tambah_kucing():
         return redirect(url_for('admin'))
 
     kriteria = conn.execute('SELECT * FROM kriteria').fetchall()
-    return render_template('tambah_kucing.html', kriteria=kriteria)
+    return render_template('tambah_kucing.html.j2', kriteria=kriteria)
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_kucing(id):
@@ -160,13 +172,13 @@ def edit_kucing(id):
                          (nilai, id, k['id']))
         conn.commit()
         flash('Data kucing berhasil diupdate!', 'success')
-        return redirect(url_for('edit_kucing', id=id))
+        return redirect(url_for('admin', id=id))
 
     kucing = conn.execute('SELECT * FROM ras_kucing WHERE id = ?', (id,)).fetchone()
     kriteria = conn.execute('SELECT * FROM kriteria').fetchall()
     nilai = conn.execute('SELECT * FROM nilai_alternatif WHERE id_kucing = ?', (id,)).fetchall()
     nilai_dict = {n['id_kriteria']: n['nilai'] for n in nilai}
-    return render_template('edit_kucing.html', kucing=kucing, kriteria=kriteria, nilai=nilai_dict)
+    return render_template('edit_kucing.html.j2', kucing=kucing, kriteria=kriteria, nilai=nilai_dict)
 
 
 @app.route('/hapus/<int:id>')
@@ -177,6 +189,7 @@ def hapus_kucing(id):
     conn.execute('DELETE FROM nilai_alternatif WHERE id_kucing = ?', (id,))
     conn.execute('DELETE FROM ras_kucing WHERE id = ?', (id,))
     conn.commit()
+    flash("Data ras kucing berhasil dihapus!!", "success")
     return redirect(url_for('admin'))
 
 @app.route('/pengguna')
@@ -185,7 +198,7 @@ def pengguna():
         return redirect(url_for('login'))
     conn = get_db()
     data = conn.execute('SELECT * FROM pengguna').fetchall()
-    return render_template('pengguna.html', pengguna=data)
+    return render_template('pengguna.html.j2', pengguna=data)
 
 @app.route('/pengguna/tambah', methods=['POST'])
 def tambah_pengguna():
@@ -214,15 +227,21 @@ def ubah_password():
     conn = get_db()
     if request.method == 'POST':
         old = hash_password(request.form['old_password'])
-        new = hash_password(request.form['new_password'])
+        new = request.form['new_password']
+        confirm = request.form['confirm_password']
+        if new != confirm:
+            flash('Password baru dan konfirmasi tidak sama!', 'danger')
+            return redirect(url_for('ubah_password'))
         user = conn.execute('SELECT * FROM pengguna WHERE username = ? AND password = ?', (session['username'], old)).fetchone()
         if user:
-            conn.execute('UPDATE pengguna SET password = ? WHERE username = ?', (new, session['username']))
+            conn.execute('UPDATE pengguna SET password = ? WHERE username = ?', (hash_password(new), session['username']))
             conn.commit()
+            flash('Password berhasil diubah!', 'success')
             return redirect(url_for('admin'))
         else:
-            return render_template('ubah_password.html', error='Password lama salah')
-    return render_template('ubah_password.html')
+            flash('Password lama salah!', 'danger')
+            return redirect(url_for('ubah_password'))
+    return render_template('ubah_password.html.j2')
 
 if __name__ == '__main__':
     app.run(debug=True)

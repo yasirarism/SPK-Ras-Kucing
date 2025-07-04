@@ -1,0 +1,61 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<style>
+  .login-card {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 32px;
+    background: #e0e0e0;
+    border-radius: 16px;
+    box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+    box-sizing: border-box;
+  }
+  .login-card h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+  }
+  .login-card label {
+    display: block;
+    margin: 16px 0 6px;
+    font-weight: bold;
+  }
+  
+  .btn-neomorph {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border-radius: 50px;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+  }
+  .btn-neomorph:hover {
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+  }
+  /* Footer */
+  footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+  }
+</style>
+
+<div class="login-card animate__animated animate__fadeInUp">
+  <h2 class="animate__animated animate__fadeInDown">Login Admin</h2>
+  <form method="post">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required class="animate__animated animate__fadeInUp">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required class="animate__animated animate__fadeInUp animate__delay-1s">
+
+    <button type="submit" class="btn-neomorph animate__animated animate__pulse animate__infinite animate__delay-2s">Login</button>
+  </form>
+</div>
+{% endblock %}

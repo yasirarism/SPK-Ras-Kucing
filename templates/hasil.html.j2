@@ -1,0 +1,213 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<style>
+  .results-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  /* Neomorphic Table */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+  }
+  thead th {
+    background: var(--neo-bg);
+    box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+    padding: 12px;
+    text-align: left;
+    color: var(--neo-accent);
+  }
+  tbody tr {
+    background: var(--neo-bg);
+    box-shadow: 4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light);
+    border-radius: 12px;
+    transition: transform 0.2s;
+  }
+  tbody tr:hover {
+    transform: translateY(-2px);
+  }
+  td {
+    padding: 12px;
+    vertical-align: middle;
+    color: var(--neo-text);
+  }
+  .foto-kucing-img {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 12px;
+    box-shadow: 4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light);
+    display: block;
+    margin: 0 auto;
+    background: var(--neo-bg);
+  }
+  /* Description Button */
+  .btn-desc {
+    padding: 8px 16px;
+    border-radius: 50px;
+    background: var(--neo-bg);
+    box-shadow:  4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light);
+    color: var(--neo-text);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: box-shadow 0.3s, background 0.3s, color 0.3s;
+  }
+  .btn-desc:hover {
+    box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+    background: var(--neo-accent);
+    color: #fff;
+  }
+  /* Modal Overlay */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30,30,30,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  /* Modal Content Neomorph */
+  .modal-content {
+    background: var(--neo-bg);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow:  8px 8px 16px var(--neo-shadow-dark),
+                -8px -8px 16px var(--neo-shadow-light);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    color: var(--neo-text);
+  }
+  .modal-content h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--neo-accent);
+  }
+  /* Modal Close Button */
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--neo-bg);
+    border: none;
+    border-radius: 50%;
+    box-shadow:  4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--neo-text);
+    transition: box-shadow 0.3s, background 0.3s, color 0.3s;
+  }
+  .modal-close:hover {
+    box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+    background: var(--neo-accent);
+    color: #fff;
+  }
+  /* Back Button */
+  .btn-kembali {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background: var(--neo-bg);
+    box-shadow: 4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: box-shadow 0.3s, background 0.3s, color 0.3s;
+    text-decoration: none;
+    color: var(--neo-text);
+  }
+  .btn-kembali:hover {
+    box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+    background: var(--neo-accent);
+    color: #fff;
+  }
+</style>
+
+<div class="results-container animate__animated animate__fadeInUp">
+  <h2 class="animate__animated animate__fadeInUp">Hasil Ranking Ras Kucing</h2>
+  <table class="animate__animated animate__fadeIn">
+    <thead>
+      <tr>
+        <th>Ranking</th>
+        <th>Nama Ras</th>
+        <th>Deskripsi</th>
+        <th>Foto</th>
+        <th>Skor</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in hasil %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ r.nama }}</td>
+        <td><button class="btn-desc animate__animated animate__fadeIn" data-nama="{{ r.nama }}" data-deskripsi="{{ r.deskripsi }}">Lihat Deskripsi</button></td>
+        <td>
+          {% if r.foto_url %}
+            <img src="{{ r.foto_url }}" alt="Foto {{ r.nama }}" class="foto-kucing-img animate__animated animate__fadeIn">
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>{{ '%.3f' | format(r.skor) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('index') }}" class="btn-kembali animate__animated animate__fadeInUp">Kembali</a>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content" id="modalBox">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('modalOverlay');
+  const box = document.getElementById('modalBox');
+  const closeBtn = document.getElementById('modalClose');
+  function showModal(title, desc) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    overlay.style.display = 'flex';
+    overlay.className = 'modal-overlay animate__animated animate__fadeIn';
+    box.className = 'modal-content animate__animated animate__fadeInDown';
+  }
+  function hideModal() {
+    overlay.className = 'modal-overlay animate__animated animate__fadeOut';
+    box.className = 'modal-content animate__animated animate__fadeOutUp';
+    setTimeout(() => { overlay.style.display = 'none'; }, 400);
+  }
+  document.querySelectorAll('.btn-desc').forEach(btn => {
+    btn.addEventListener('click', () => showModal(btn.dataset.nama, btn.dataset.deskripsi));
+  });
+  closeBtn.addEventListener('click', hideModal);
+  overlay.addEventListener('click', e => e.target === overlay && hideModal());
+</script>
+{% endblock %}

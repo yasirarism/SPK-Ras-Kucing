@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title or "SPK Ras Kucing" }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='cat-logo.png') }}">
+    <style>
+        :root {
+            --neo-bg: #e0e0e0;
+            --neo-shadow-dark: #bebebe;
+            --neo-shadow-light: #fff;
+            --neo-text: #333;
+            --neo-accent: #007bff;
+            --neo-card: #e0e0e0;
+        }
+
+        body.dark-mode {
+            --neo-bg: #23272f;
+            --neo-shadow-dark: #181a1f;
+            --neo-shadow-light: #2e323a;
+            --neo-text: #e0e0e0;
+            --neo-accent: #4fc3f7;
+            --neo-card: #23272f;
+            background: var(--neo-bg);
+            color: var(--neo-text);
+        }
+
+        body,
+        header,
+        main,
+        footer,
+        .neocard,
+        .form-container,
+        .input-table th,
+        .input-table td,
+        .modal-content,
+        .modal-content-neomorph,
+        .modal-neomorph,
+        .modal-box,
+        .confirm-box,
+        .login-card,
+        .results-container,
+        .list-container,
+        .form-section,
+        .about-section {
+            background: var(--neo-bg) !important;
+            color: var(--neo-text) !important;
+        }
+
+        header,
+        .neocard,
+        .form-container,
+        .input-table th,
+        .input-table td,
+        .modal-content,
+        .modal-content-neomorph,
+        .modal-neomorph,
+        .modal-box,
+        .confirm-box,
+        .login-card,
+        .results-container,
+        .list-container,
+        .form-section,
+        .about-section,
+        footer {
+            box-shadow: 8px 8px 16px var(--neo-shadow-dark),
+                -8px -8px 16px var(--neo-shadow-light) !important;
+        }
+
+        input,
+        textarea,
+        select,
+        button,
+        .btn-neomorph,
+        .btn-primary,
+        .btn-secondary,
+        .btn-detail,
+        .logout-btn,
+        .ubah-password-btn,
+        .btn-kembali,
+        .btn-desc {
+            background: var(--neo-bg) !important;
+            color: var(--neo-text) !important;
+            box-shadow: 4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light) !important;
+            transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        button:active,
+        .btn-neomorph:active,
+        .btn-primary:active,
+        .btn-secondary:active,
+        .btn-detail:active,
+        .logout-btn:active,
+        .ubah-password-btn:active,
+        .btn-kembali:active,
+        .btn-desc:active {
+            background: #d1d9e6 !important;
+            box-shadow: inset 2px 2px 8px var(--neo-shadow-dark), inset -2px -2px 8px var(--neo-shadow-light) !important;
+            color: var(--neo-accent) !important;
+        }
+
+        body.dark-mode button:active,
+        body.dark-mode .btn-neomorph:active,
+        body.dark-mode .btn-primary:active,
+        body.dark-mode .btn-secondary:active,
+        body.dark-mode .btn-detail:active,
+        body.dark-mode .logout-btn:active,
+        body.dark-mode .ubah-password-btn:active,
+        body.dark-mode .btn-kembali:active,
+        body.dark-mode .btn-desc:active {
+            background: #23272f !important;
+            box-shadow: inset 2px 2px 8px #181a1f, inset -2px -2px 8px #2e323a !important;
+            color: #4fc3f7 !important;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--neo-accent)33,
+                4px 4px 12px var(--neo-shadow-dark),
+                -4px -4px 12px var(--neo-shadow-light) !important;
+            background: var(--neo-card) !important;
+        }
+
+        a,
+        .btn-neomorph,
+        .btn-primary,
+        .btn-secondary,
+        .btn-detail,
+        .logout-btn,
+        .ubah-password-btn,
+        .btn-kembali,
+        .btn-desc {
+            color: var(--neo-accent) !important;
+        }
+
+        a:hover,
+        .btn-neomorph:hover,
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .btn-detail:hover,
+        .logout-btn:hover,
+        .ubah-password-btn:hover,
+        .btn-kembali:hover,
+        .btn-desc:hover {
+            background: var(--neo-accent) !important;
+            color: #fff !important;
+        }
+
+        th {
+            color: var(--neo-accent) !important;
+        }
+
+        footer {
+            background: var(--neo-bg) !important;
+            color: var(--neo-text) !important;
+            text-align: center;
+            font-size: 0.98em;
+            padding: 18px 0 14px 0;
+            margin: 48px 0 0 0;
+            border-radius: 0 0 24px 24px;
+            width: 100%;
+            max-width: 100vw;
+            box-shadow: 8px 8px 24px var(--neo-shadow-dark), -8px -8px 24px var(--neo-shadow-light) !important;
+            opacity: 0.95;
+            letter-spacing: 0.2px;
+            position: relative;
+            left: 0;
+            bottom: 0;
+        }
+
+        footer p {
+            margin: 0;
+            color: var(--neo-text) !important;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            min-height: 72px;
+            background: var(--neo-bg) !important;
+            color: var(--neo-text) !important;
+            box-shadow: 8px 8px 16px var(--neo-shadow-dark), -8px -8px 16px var(--neo-shadow-light) !important;
+            transition: background 0.3s, color 0.3s;
+            border-radius: 0 0 24px 24px;
+            position: relative;
+        }
+
+        .header-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 14px;
+            background: var(--neo-bg) !important;
+            box-shadow: 4px 4px 8px var(--neo-shadow-dark), -4px -4px 8px var(--neo-shadow-light) !important;
+            object-fit: cover;
+            transition: width 0.2s, height 0.2s;
+        }
+
+        header h1 {
+            flex: 1;
+            margin: 0;
+            color: var(--neo-text) !important;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            font-size: 1.35rem;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .darkmode-switch {
+            display: flex;
+            align-items: center;
+            margin-left: 18px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column !important;
+                gap: 12px;
+                padding: 12px 8px !important;
+            }
+
+            .header-logo {
+                width: 40px;
+                height: 40px;
+                margin-right: 8px;
+            }
+
+            header h1 {
+                font-size: 1.05rem;
+                text-align: left;
+            }
+
+            .darkmode-switch {
+                margin-left: 0;
+            }
+        }
+
+        .modal-content,
+        .modal-content-neomorph {
+            background: var(--neo-bg) !important;
+            color: var(--neo-text) !important;
+        }
+
+        #toast-neomorph {
+            background: var(--neo-bg) !important;
+            color: var(--neo-text) !important;
+            box-shadow: 8px 8px 24px var(--neo-shadow-dark),
+                -8px -8px 24px var(--neo-shadow-light) !important;
+        }
+
+        body.dark-mode #toast-neomorph {
+            color: #fff !important;
+        }
+
+        .darkmode-switch {
+            display: flex;
+            align-items: center;
+            margin-left: 18px;
+        }
+
+        .switch-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background: var(--neo-bg);
+            border-radius: 50px;
+            box-shadow: 2px 2px 6px var(--neo-shadow-dark),
+                -2px -2px 6px var(--neo-shadow-light);
+            padding: 4px 12px;
+            transition: background 0.3s;
+            position: relative;
+            gap: 0;
+            user-select: none;
+            width: 64px;
+            justify-content: space-between;
+        }
+
+        .switch-label .switch-ball {
+            width: 24px;
+            height: 24px;
+            background: var(--neo-accent);
+            border-radius: 50%;
+            transition: background 0.3s, transform 0.3s;
+            box-shadow: 2px 2px 6px var(--neo-shadow-dark),
+                -2px -2px 6px var(--neo-shadow-light);
+            position: relative;
+            z-index: 2;
+        }
+
+        .switch-label .switch-icon {
+            font-size: 1.6em;
+            color: #ffb300;
+            transition: color 0.3s, filter 0.3s;
+            user-select: none;
+        }
+
+        body.dark-mode .switch-label .switch-ball {
+            background: #ffd600;
+            transform: translateX(28px) scale(1.1);
+        }
+
+        body.dark-mode .switch-icon-light {
+            color: #888;
+            opacity: 0.7;
+            order: 3;
+        }
+
+        body.dark-mode .switch-icon-dark {
+            color: #ffd600;
+            opacity: 1;
+            order: 1;
+        }
+
+        body.dark-mode .switch-icon {
+            color: #ffd600;
+            filter: drop-shadow(0 0 2px #222);
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column !important;
+                gap: 12px;
+                padding: 12px 8px !important;
+            }
+
+            .darkmode-switch {
+                margin-top: 10px;
+                left: unset;
+                position: static;
+            }
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="number"],
+        input[type="password"],
+        textarea {
+            border: 1.5px solid var(--neo-shadow-dark);
+            border-radius: 12px;
+            background: var(--neo-bg);
+            color: var(--neo-text);
+            box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            font-size: 1rem;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            border: 2.5px solid var(--neo-accent) !important;
+            outline: none !important;
+            /* Efek neomorph emboss biru */
+            box-shadow:
+                0 0 0 2px var(--neo-accent)55,
+                inset 2px 2px 8px var(--neo-accent),
+                inset -2px -2px 8px #fff2,
+                0 2px 8px var(--neo-shadow-dark),
+                0 -2px 8px var(--neo-shadow-light) !important;
+            background: var(--neo-card) !important;
+            z-index: 2;
+            transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
+        }
+
+        /* Tabel Neomorph Global */
+        .input-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            margin-bottom: 24px;
+        }
+
+        .input-table th {
+            background: var(--neo-bg);
+            box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+            padding: 12px;
+            text-align: left;
+            color: var(--neo-accent);
+            border-radius: 10px 10px 0 0;
+        }
+
+        .input-table td {
+            background: var(--neo-bg);
+            box-shadow: 4px 4px 8px var(--neo-shadow-dark),
+                -4px -4px 8px var(--neo-shadow-light);
+            border-radius: 10px;
+            padding: 12px;
+            vertical-align: middle;
+        }
+
+        .input-table td input,
+        .input-table td textarea,
+        .input-table td select {
+            width: 100%;
+            min-width: 180px;
+            box-sizing: border-box;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 1.5px solid var(--neo-shadow-dark);
+            background: var(--neo-bg);
+            color: var(--neo-text);
+            box-shadow: inset 4px 4px 8px var(--neo-shadow-dark),
+                inset -4px -4px 8px var(--neo-shadow-light);
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .input-table td input:focus,
+        .input-table td textarea:focus,
+        .input-table td select:focus {
+            border: 2.5px solid var(--neo-accent);
+            outline: none;
+            box-shadow:
+                0 0 0 2px var(--neo-accent)55,
+                inset 2px 2px 8px var(--neo-accent),
+                inset -2px -2px 8px #fff2,
+                0 2px 8px var(--neo-shadow-dark),
+                0 -2px 8px var(--neo-shadow-light) !important;
+            background: var(--neo-card);
+            z-index: 2;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="url"],
+        .form-container input[type="number"],
+        .form-container input[type="password"],
+        .form-container textarea,
+        .login-card input[type="text"],
+        .login-card input[type="password"] {
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 180px;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        #flash-messages {
+            position: fixed;
+            top: 32px;
+            right: 32px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .flash {
+            min-width: 240px;
+            max-width: 340px;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            box-shadow: 2px 2px 16px var(--neo-shadow-dark), -2px -2px 16px var(--neo-shadow-light);
+            background: #fffbe7;
+            color: #333;
+            text-align: left;
+            letter-spacing: 0.2px;
+            opacity: 0.97;
+            margin: 0;
+            animation: fadeInRight 0.6s;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .flash-success {
+            background: #e0ffe7;
+            color: #1a7f37;
+        }
+
+        .flash-danger {
+            background: #ffe7e7;
+            color: #b71c1c;
+        }
+
+        .flash-warning {
+            background: #fffbe7;
+            color: #bfa100;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+
+            to {
+                opacity: 0.97;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='cat-logo.png') }}" alt="Logo Kucing"
+            class="header-logo animate__animated animate__bounceIn">
+        <h1 class="animate__animated animate__bounceIn">
+            {{ header or "Sistem Pendukung Keputusan" }}
+        </h1>
+        <div class="darkmode-switch">
+            <span id="darkSwitchIcon" class="switch-icon" title="Toggle dark mode" style="font-size:1.6em;cursor:pointer;transition:color 0.3s;">🌙</span>
+        </div>
+    </header>
+
+    <!-- Tambahkan di sini -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="animate__animated animate__fadeInUp animate__delay-1s">
+        <p>&copy; <span id="year"></span> | Sistem Pendukung Keputusan Ras Kucing | Dibuat dengan &#x1F9E1; oleh Yasir</p>
+    </footer>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        // Dark mode switch tanpa checkbox
+        const icon = document.getElementById('darkSwitchIcon');
+        function setIcon() {
+            if (document.body.classList.contains('dark-mode')) {
+                icon.textContent = '☀️';
+                icon.title = 'Switch to Light Mode';
+            } else {
+                icon.textContent = '🌙';
+                icon.title = 'Switch to Dark Mode';
+            }
+        }
+        if (localStorage.getItem('darkMode') === 'true' ||
+            (localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.body.classList.add('dark-mode');
+        }
+        setIcon();
+        icon.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'true' : 'false');
+            setIcon();
+        });
+    </script>
+    <script>
+      setTimeout(function() {
+        document.querySelectorAll('.flash').forEach(function(el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(60px)';
+          setTimeout(function() {
+            el.remove();
+          }, 500);
+        });
+      }, 3000);
+    </script>
+</body>
+
+</html>
